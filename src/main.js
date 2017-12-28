@@ -5,25 +5,13 @@ import App from './App'
 import router from './router'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
-import Vuex from 'vuex'
+import store from './store/store'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 
 Vue.config.productionTip = false
 Vue.use(ElementUI)
-Vue.use(Vuex)
 Vue.use(VueAxios, axios)
-
-const store = new Vuex.Store({
-  state: {
-    count: 0
-  },
-  mutations: {
-    increment (state) {
-      state.count++
-    }
-  }
-})
 
 /* eslint-disable no-new */
 new Vue({
