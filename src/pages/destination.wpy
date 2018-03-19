@@ -85,6 +85,20 @@
         }
       }
     }
+    .btn{
+      width:90%;
+      margin:0 auto;
+      margin-bottom:25rpx;
+      border-radius:100rpx;
+      border-radius:100rpx;
+      border:1rpx solid #ddd;
+      text-align:center;
+      height:80rpx;
+      line-height:80rpx;
+      font-size:30rpx;
+      color:#999;
+
+    }
   }
 </style>
 <template>
@@ -98,7 +112,7 @@
       <image src="../../images/destination/pois.png"></image>
       <image src="../../images/destination/trips.png"></image>      
     </view>
-    <view class="place">
+    <view class="place" wx:if="{{hotlist}}" >
       <view class="place_title">
         <image src="../../images/destination/divide_l.png"></image>
         <text>热门地点</text>
@@ -116,8 +130,11 @@
           </view>
         </repeat>
       </view>
+      <view class="btn" >
+        <text>全部热门地点</text>
+      </view>
     </view>
-
+    
   </view>
   <toast></toast>
 </template>
@@ -138,7 +155,7 @@
 
     data = {
       placeInfo: null,
-      hotlist: [],
+      hotlist: null,
     }
 
     onLoad(option) {
