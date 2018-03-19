@@ -1,0 +1,171 @@
+<style lang="less">
+  .descontainer{
+    .head{
+      position:relative;
+      z-index:-2;
+      image{
+        width:100%;
+        height:400rpx;
+      }
+      .name{
+        position:absolute;
+        bottom:80rpx;
+        left:20rpx;
+        font-size:50rpx;
+        color:#fff;
+        font-weight:bold;
+      }
+      .desc{
+        position:absolute;
+        bottom:40rpx;
+        left:20rpx;
+        font-size:30rpx;
+        color:#fff;
+      }
+    }
+    .nav{
+      margin-top:-20rpx;
+      display:flex;
+      flex-direction:row;
+      padding:40rpx;
+      border-radius:20rpx 20rpx 0 0;
+      background:#fff;
+      image{
+        width:88rpx;
+        height:94rpx;
+        margin-right:40rpx;
+      }
+    }
+    .place{
+      .place_title{
+        display:flex;
+        flex-direction:row;
+        justify-content:center;
+        align-items:center;
+        font-size:25rpx;
+        image{
+          width:146rpx;
+          height:10rpx;
+          vertical-align:bottom;
+          margin:0 20rpx;
+        }
+      }
+      .place_list{
+        display:flex;
+        flex-wrap:wrap;
+        padding:40rpx 20rpx;
+        justify-content:space-between;
+        .item{
+          position:relative;
+          margin-bottom:20rpx;
+          .bg{
+            width:349rpx;
+            height:349rpx;
+            border-radius:8rpx;
+            vertical-align:bottom;
+          }
+          .name{
+            position:absolute;
+            bottom:60rpx;
+            left:20rpx;
+            font-size:30rpx;
+            color:#fff;
+            z-index:22;
+
+          }
+          .rating_desc{
+            position:absolute;
+            left:20rpx;
+            bottom:20rpx;
+            font-size:25rpx;
+            color:#fff;
+            display:flex;
+            z-index:999
+          }
+        }
+      }
+    }
+  }
+</style>
+<template>
+  <view class="descontainer">
+    <view class="head">
+      <image src="{{placeInfo.hottest_places[0].photo}}"></image>
+      <view class="name"><text>{{placeInfo.name_zh}}</text></view>
+      <view class="desc"><text>{{placeInfo.visited_count}}去过/{{placeInfo.wish_to_go_count}}喜欢</text></view>
+    </view>
+    <view class="nav">
+      <image src="../../images/destination/pois.png"></image>
+      <image src="../../images/destination/trips.png"></image>      
+    </view>
+    <view class="place">
+      <view class="place_title">
+        <image src="../../images/destination/divide_l.png"></image>
+        <text>热门地点</text>
+        <image src="../../images/destination/divide_r.png"></image>
+      </view>
+      <view class="place_list">
+        <repeat for="{{hotlist}}" key="index" index="index" item="item" >
+          <view class="item">
+          <image src="{{item.cover_s}}" class="bg"></image>
+          <view class="name"><text>{{item.name}}</text></view>
+          <view class="rating_desc">
+            <rating :count.sync='item'></rating>
+            <text>{{item.rating_users}}人评价</text>
+          </view>
+          </view>
+        </repeat>
+      </view>
+    </view>
+
+  </view>
+  <toast></toast>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import Toast from 'wepy-com-toast';
+  import Rating from '../../components/rating';
+
+  export default class Index extends wepy.page {
+    config = {
+      enablePullDownRefresh: true
+    }
+    components = {
+      toast: Toast,
+      rating: Rating
+    }
+
+    data = {
+      placeInfo: null,
+      hotlist: [],
+    }
+
+    onLoad(option) {
+      let self = this
+      self.$invoke('toast', 'show');
+      wepy.request({
+          url: 'http://api.breadtrip.com/destination/place/'+ option.type + '/' + option.id + '/',
+          success: function(res){
+            self.$invoke('toast', 'hide')
+            self.placeInfo = res.data
+            self.getPoiById(option)
+            wx.setNavigationBarTitle({
+              title: self.placeInfo.name
+            })
+            self.$apply()
+          }
+      })
+    }
+    getPoiById(option){
+      let self = this
+      wepy.request({
+        url: 'http://api.breadtrip.com/destination/place/'+ option.type + '/' + option.id + '/pois/' + option.Poitype+'/',
+        success: function(d){
+          self.hotlist = d.data.items
+          self.$apply()
+        }
+      })
+    }
+  }
+</script>

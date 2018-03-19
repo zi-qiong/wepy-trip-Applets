@@ -1,0 +1,49 @@
+<style lang="less">
+  .starwrapper{
+      display:flex;
+      flex-direction:row;
+      margin-right:15rpx;
+      image{
+          width:25rpx;
+          height:25rpx;
+      }
+  }
+</style>
+
+<template>
+  <view  class="starwrapper">
+    <view wx:for="{{list}}" wx:for-item="i">
+        <image src="../../images/destination/star_s.png" wx:if="{{count.rating>=i}}"></image>
+        <image src="../../images/destination/semistar_s.png" wx:if="{{count.rating<i && i-1<count.rating}}"></image>
+        <image src="../../images/destination/unstar_s.png" wx:if="{{count.rating<i && !(i-1<count.rating)}}"></image>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  export default class Rating extends wepy.component {
+    props={
+      count:{
+        type:Object,
+        twoWay: true
+      }
+    };
+    data = {
+       list:[1,2,3,4,5],
+    }
+    onLoad() {
+        let self = this
+        console.log(self.count)
+        self.$apply()
+    }
+    watch ={
+      count(){
+        let self = this
+        console.log(self)
+        self.$apply()
+      }
+    }
+  }
+</script>
