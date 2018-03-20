@@ -110,7 +110,7 @@
     </view>
     <view class="nav">
       <image src="../../images/destination/pois.png"></image>
-      <image src="../../images/destination/trips.png"></image>      
+      <image src="../../images/destination/trips.png"></image>
     </view>
     <view class="place" wx:if="{{hotlist}}" >
       <view class="place_title">
@@ -134,7 +134,7 @@
         <text>全部热门地点</text>
       </view>
     </view>
-    
+
   </view>
   <toast></toast>
 </template>
@@ -142,7 +142,7 @@
 <script>
   import wepy from 'wepy'
   import Toast from 'wepy-com-toast';
-  import Rating from '../../components/rating';
+  import Rating from '../components/rating';
 
   export default class Index extends wepy.page {
     config = {
