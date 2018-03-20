@@ -64,7 +64,7 @@
     methods = {
      toPlaceDetail(e){
        wx.navigateTo({
-         url: '/pages/destination/destination?id='+ e.id +'&type=' + e.type + '&Poitype=all' 
+         url: '/pages/destination?id='+ e.id +'&type=' + e.type + '&Poitype=all' 
        })
      }
     }

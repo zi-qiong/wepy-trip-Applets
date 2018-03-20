@@ -24,6 +24,7 @@ export default class extends wepy.app {
     pages: [
       'pages/index',
       'pages/explore',
+      'pages/destination',
     ],
     window: {
       backgroundTextStyle: 'dark',
