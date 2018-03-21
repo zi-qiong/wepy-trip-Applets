@@ -2,7 +2,6 @@
 .itemwrapper{
   width:100%;
   padding:20rpx 20rpx 0 20rpx;
-  box-sizing:border-box;
   .title{
     font-size:16*2rpx;
   }
@@ -64,7 +63,7 @@
     methods = {
      toPlaceDetail(e){
        wx.navigateTo({
-         url: '/pages/destination?id='+ e.id +'&type=' + e.type + '&Poitype=all' 
+         url: '/pages/destination?id='+ e.id +'&type=' + e.type + '&Poitype=all'
        })
      }
     }
@@ -76,7 +75,7 @@
           self.placelist = res.data.elements
           self.$apply()
         }
-      })        
+      })
     }
   }
 </script>
