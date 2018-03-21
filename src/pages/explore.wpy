@@ -10,15 +10,14 @@
     display:flex;
     flex-wrap:wrap;
     margin-top:20rpx;
+    justify-content:space-between;
     .pic{
       position:relative;
       margin-bottom:20rpx;
-      &:nth-child(2n){
-        margin-left:20rpx;
-      }
+      flex:0 0 49%;
+      width:49%;
       image{
-        flex:0 0 349rpx;
-        width:349rpx;
+        width:100%;
         height:349rpx;
         border-radius:10rpx;
       }
@@ -64,7 +63,7 @@
     methods = {
      toPlaceDetail(e){
        wx.navigateTo({
-         url: '/pages/destination?id='+ e.id +'&type=' + e.type + '&Poitype=all' 
+         url: '/pages/destination?id='+ e.id +'&type=' + e.type + '&Poitype=all'
        })
      }
     }
@@ -76,7 +75,7 @@
           self.placelist = res.data.elements
           self.$apply()
         }
-      })        
+      })
     }
   }
 </script>
