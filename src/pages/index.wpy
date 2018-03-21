@@ -2,6 +2,7 @@
 .container {
   margin: 20rpx;
   overflow: hidden;
+  height:352rpx;
   border-radius: 8rpx;
   color: #fff;
 }
@@ -44,28 +45,38 @@
   top: 15rpx;
   left: 60rpx;
 }
+.loading{
+  color: #b0b0b0;
+  text-align: center;
+  margin: 20rpx 0;
+}
 </style>
 <template>
-  <repeat for="{{listData}}" key="index" index="index" item="item">
-    <view class="container">
-      <image class="cover" src="{{ item.data[0].cover_image }}"></image>
-      <view class="content">
-        <text class="h2">{{ item.data[0].name }}</text>
-        <view class="detail">
-          <view>
-            <text class="text">{{ item.data[0].first_day }}</text>
-            <text class="text">{{ item.data[0].day_count }}</text>
-            <text class="text">{{ item.data[0].view_count }}</text>
+  <scroll-view bindscrolltolower="loadMore" style="height: {{ windowHeight }}px; width: {{ windowWidth }}px;" scroll-y="true" lower-threshold="800">
+    <repeat for="{{listData}}" key="index" index="index" item="item">
+      <view class="container">
+        <image class="cover" src="{{ item.data[0].cover_image }}"></image>
+        <view class="content">
+          <text class="h2">{{ item.data[0].name }}</text>
+          <view class="detail">
+            <view>
+              <text class="text">{{ item.data[0].first_day }}</text>
+              <text class="text">{{ item.data[0].day_count }}</text>
+              <text class="text">{{ item.data[0].view_count }}</text>
+            </view>
+            <text class="text">{{ item.data[0].popular_place_str }}</text>
           </view>
-          <text class="text">{{ item.data[0].popular_place_str }}</text>
-        </view>
-        <view class="user">
-          <image class="userlog" src="{{ item.data[0].user.avatar_l}}"></image>
-          <text class="userText">by {{item.data[0].user.name}}</text>
+          <view class="user">
+            <image class="userlog" src="{{ item.data[0].user.avatar_l}}"></image>
+            <text class="userText">by {{item.data[0].user.name}}</text>
+          </view>
         </view>
       </view>
+    </repeat>
+    <view class="loading">
+      正在加载...
     </view>
-  </repeat>
+  </scroll-view>
 </template>
 
 <script>
@@ -79,18 +90,40 @@
     }
 
     data = {
-      listData: []
+      start: 0,
+      listData: [],
+      loading: false,
+      windowWidth: 0,
+      windowHeight: 0
     }
+    methods = {
 
-    onLoad() {
+    }
+    loadMore() {
       const self = this
+      if (self.loading) {
+        return
+      }
+      self.loading = true
       wepy.request({
-        url: 'http://api.breadtrip.com/v2/index/?next_start=0',
-        success: function (d) {
-          self.listData = self.listData.concat(d.data.data.elements)
+        url: `http://api.breadtrip.com/v2/index/?next_start=${this.start}`,
+        success: function (res) {
+          self.listData = self.listData.concat(res.data.data.elements)
           self.$apply()
+          self.start = res.data.data.next_start
+          self.loading = false
         }
       })
+    }
+    onLoad() {
+      const self = this
+      this.loadMore()
+      wx.getSystemInfo({
+      success: function (res) {
+        self.windowWidth = res.windowWidth;
+        self.windowHeight = res.windowHeight;
+      }
+    });
     }
   }
 </script>
