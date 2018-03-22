@@ -1,4 +1,29 @@
 <style lang="less">
+.trip {
+  padding:40rpx 30rpx;
+}
+.author {
+  width: 80rpx;
+  height: 80rpx;
+  margin-right: 20rpx;
+  border-radius: 50%;
+  float: left;
+}
+.title {
+  font-size:40rpx;
+  line-height:1;
+  color:#4abdcc;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+  overflow:hidden;
+  margin-bottom:9rpx;
+}
+.text {
+  font-size: 18rpx;
+  line-height:1;
+  color:#999;
+  margin-right: 20rpx;
+}
 .loading{
   color: #b0b0b0;
   text-align: center;
@@ -6,6 +31,17 @@
 }
 </style>
 <template>
+  <view class="trip">
+    <view>
+      <image class="author" src="{{ waypoint.user.avatar_l }}"></image>
+      <view class="title">{{waypoint.name}}</view>
+      <view class="message">
+        <text class="text">{{ waypoint.first_day }}</text>
+        <text class="text">{{ waypoint.recommendations }}喜欢</text>
+        <text class="text">{{ waypoint.view_count }}浏览</text>
+      </view>
+    </view>
+  </view>
   <view class="loading">
     正在加载...
   </view>
