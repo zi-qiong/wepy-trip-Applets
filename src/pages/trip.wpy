@@ -24,10 +24,65 @@
   color:#999;
   margin-right: 20rpx;
 }
-.loading{
-  color: #b0b0b0;
-  text-align: center;
-  margin: 20rpx 0;
+.trip-wps{
+  margin-top: 36rpx;
+}
+.wp-sep{
+  background: #e7ddc6;
+  height: 36rpx;
+  margin-left: 20rpx;
+  width: 8rpx;
+}
+.day .day-marker{
+  color: #a8915e;
+  font-size: 28rpx;
+  font-weight: bold;
+  line-height: 32rpx;
+  height: 32rpx;
+}
+.day .circle{
+  display: inline-block;
+  width: 16rpx;
+  height: 16rpx;
+  background-color: #fff;
+  border-radius: 16rpx;
+  border: 8rpx solid #e7ddc6;
+  margin: 0 8rpx;
+  vertical-align: text-bottom;
+}
+.day-content .photo-ctn{
+  position: relative;
+}
+.day-content .cover{
+  vertical-align: bottom;
+}
+.day-content .text{
+  background-color: #fff;
+  padding: 10rpx 20rpx 0;
+  color: #5c5c5c;
+  word-break: break-word;
+}
+.day-content .wp-stats{
+  padding: 10rpx 18rpx 22rpx;
+  background-color: #fff;
+  overflow: hidden;
+  border-bottom: 6rpx solid #e7e7e7;
+}
+.day-content .wp-stats .wp-time{
+  font-size: 24rpx;
+  float: left;
+  color: #999;
+  height: 44rpx;
+  line-height: 44rpx;
+}
+.day-content .wp-stats .icon-time{
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 10rpx;
+  position: relative;
+  top: -2rpx;
+  width: 24rpx;
+  height: 24rpx;
 }
 </style>
 <template>
@@ -40,10 +95,33 @@
         <text class="text">{{ waypoint.recommendations }}喜欢</text>
         <text class="text">{{ waypoint.view_count }}浏览</text>
       </view>
+      <view class="trip-wps">
+        <repeat for="{{waypoint.days}}" key="index" index="index" item="item">
+          <view class="day">
+            <view class="day-marker"><text class="circle"></text>{{ item.date }} 第{{ item.day }}天</view>
+            <view class="wp-sep clear-both"></view>
+            <view class="day-content">
+              <repeat for="{{item.waypoints}}" key="index" index="index" item="wp">
+                <block wx:if="{{ wp.photo || wp.text }}">
+                  <view class="waypoint" @tap="viewWaypoint" data-waypoint="{{ wp.id }}">
+                    <block wx:if="{{ wp.photo }}">
+                      <view class="photo-ctn">
+                        <image style="width: 100%; height: {{ wp.photo_info.h * (windowWidth - 30) / wp.photo_info.w }}px; background-color: #eeeeee;" class="cover" src="{{ wp.photo_webtrip }}"></image>
+                      </view>
+                      <view wx:if="{{ wp.text }}" class="text">{{ wp.text }}</view>
+                      <view class="wp-stats">
+                        <view class="wp-time"><image class="icon-time" src="../../images/time.png"></image>{{ wp.local_time }}</view>
+                      </view>
+                    </block>
+                  </view>
+                  <view class="wp-sep"></view>
+                </block>
+              </repeat>
+            </view>
+          </view>
+        </repeat>
+      </view>
     </view>
-  </view>
-  <view class="loading">
-    正在加载...
   </view>
 </template>
 
@@ -59,15 +137,36 @@
     data = {
       waypoint: {}
     }
+    methods = {
+      viewWaypoint(e) {
+        const self = this;
+        const ds = e.currentTarget.dataset;
+        wx.navigateTo({
+          url: `../waypoint/waypoint?waypointId=${ds.waypoint}&tripId=${self.data.trip.id}`,
+        });
+      },
+      gotoUser(e) {
+        const userId = e.target.dataset.id;
+        wx.navigateTo({
+          url: `../user/user?id=${userId}`,
+        });
+      }
+    }
     onLoad(option) {
       const self = this
       wx.setNavigationBarTitle({
         title: option.name
       })
+      wx.showToast({
+        title: '正在加载',
+        icon: 'loading',
+        duration: 10000,
+      });
       wepy.request({
         url: `http://api.breadtrip.com/trips/${option.id}/waypoints/`,
         success: function (res) {
           self.waypoint = res.data
+          wx.hideToast()
           self.$apply()
         }
       })
