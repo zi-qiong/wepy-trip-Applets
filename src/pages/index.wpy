@@ -54,7 +54,7 @@
 <template>
   <scroll-view bindscrolltolower="loadMore" style="height: {{ windowHeight }}px; width: {{ windowWidth }}px;" scroll-y="true" lower-threshold="800">
     <repeat for="{{listData}}" key="index" index="index" item="item">
-      <view class="container">
+      <view class="container" @tap="viewTrip({{item}})">
         <image class="cover" src="{{ item.data[0].cover_image }}"></image>
         <view class="content">
           <text class="h2">{{ item.data[0].name }}</text>
@@ -97,7 +97,11 @@
       windowHeight: 0
     }
     methods = {
-
+      viewTrip(e) {
+        wx.navigateTo({
+          url: `/pages/trip?id=${e.data[0].id}&name=${e.data[0].name}`
+        })
+      }
     }
     loadMore() {
       const self = this

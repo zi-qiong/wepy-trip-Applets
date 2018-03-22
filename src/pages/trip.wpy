@@ -1,0 +1,41 @@
+<style lang="less">
+.loading{
+  color: #b0b0b0;
+  text-align: center;
+  margin: 20rpx 0;
+}
+</style>
+<template>
+  <view class="loading">
+    正在加载...
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import { connect } from 'wepy-redux'
+
+  export default class Index extends wepy.page {
+    config = {
+      enablePullDownRefresh: true
+    }
+
+    data = {
+      waypoint: {}
+    }
+    onLoad(option) {
+      const self = this
+      wx.setNavigationBarTitle({
+        title: option.name
+      })
+      wepy.request({
+        url: `http://api.breadtrip.com/trips/${option.id}/waypoints/`,
+        success: function (res) {
+          self.waypoint = res.data
+          self.$apply()
+        }
+      })
+
+    }
+  }
+</script>
