@@ -97,7 +97,7 @@ page {
       <view class="title">{{waypoint.name}}</view>
       <view class="message">
         <text class="text">{{ waypoint.first_day }}</text>
-        <text class="text">{{ waypoint.recommendations }}喜欢</text>
+        <text class="text">{{ waypoint.recommendations }}人喜欢</text>
         <text class="text">{{ waypoint.view_count }}浏览</text>
       </view>
       <view class="trip-wps">
