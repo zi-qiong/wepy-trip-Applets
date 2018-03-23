@@ -1,4 +1,7 @@
 <style lang="less">
+page {
+  background-color: #fbf7ed;
+}
 .trip {
   padding:40rpx 30rpx;
 }
@@ -60,6 +63,8 @@
   background-color: #fff;
   padding: 10rpx 20rpx 0;
   color: #5c5c5c;
+  line-height: 2;
+  font-size: 26rpx;
   word-break: break-word;
 }
 .day-content .wp-stats{
@@ -99,11 +104,11 @@
         <repeat for="{{waypoint.days}}" key="index" index="index" item="item">
           <view class="day">
             <view class="day-marker"><text class="circle"></text>{{ item.date }} 第{{ item.day }}天</view>
-            <view class="wp-sep clear-both"></view>
+            <view class="wp-sep"></view>
             <view class="day-content">
               <repeat for="{{item.waypoints}}" key="index" index="index" item="wp">
                 <block wx:if="{{ wp.photo || wp.text }}">
-                  <view class="waypoint" @tap="viewWaypoint" data-waypoint="{{ wp.id }}">
+                  <view class="waypoint" @tap="viewWaypoint({{wp}})" data-waypoint="{{ wp.id }}">
                     <block wx:if="{{ wp.photo }}">
                       <view class="photo-ctn">
                         <image style="width: 100%; height: {{ wp.photo_info.h * (windowWidth - 30) / wp.photo_info.w }}px; background-color: #eeeeee;" class="cover" src="{{ wp.photo_webtrip }}"></image>
@@ -140,15 +145,10 @@
     methods = {
       viewWaypoint(e) {
         const self = this;
+        console.log(e);
         const ds = e.currentTarget.dataset;
         wx.navigateTo({
-          url: `../waypoint/waypoint?waypointId=${ds.waypoint}&tripId=${self.data.trip.id}`,
-        });
-      },
-      gotoUser(e) {
-        const userId = e.target.dataset.id;
-        wx.navigateTo({
-          url: `../user/user?id=${userId}`,
+          url: `/pages/waypoint?waypointId=${self.waypoint.}&tripId=${e.data.trip.id}`,
         });
       }
     }
