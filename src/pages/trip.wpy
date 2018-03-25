@@ -144,11 +144,8 @@ page {
     }
     methods = {
       viewWaypoint(e) {
-        const self = this;
-        console.log(e);
-        const ds = e.currentTarget.dataset;
         wx.navigateTo({
-          url: `/pages/waypoint?waypointId=${self.waypoint.}&tripId=${e.data.trip.id}`,
+          url: `/pages/waypoint?waypointId=${e.id}&tripId=${e.trip_id}`,
         });
       }
     }
@@ -170,7 +167,6 @@ page {
           self.$apply()
         }
       })
-
     }
   }
 </script>

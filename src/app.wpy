@@ -23,6 +23,7 @@ export default class extends wepy.app {
     pages: [
       'pages/index',
       'pages/trip',
+      'pages/waypoint',
       'pages/explore',
       'pages/destination',
     ],

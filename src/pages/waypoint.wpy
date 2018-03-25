@@ -1,8 +1,38 @@
 <style lang="less">
-
+page {
+  background-color: #fbf7ed;
+}
 </style>
 <template>
-
+  <view class="waypoint" wx:if="{{ point }}">
+    <block wx:if="{{ point.photo }}">
+      <view class="photo-ctn">
+        <image bindtap="previewImage" data-src="{{ point.photo }}" style="width: 100%; height: {{ point.photo_info.h * (windowWidth - 30) / point.photo_info.w }}px; background-color: #eeeeee;" class="cover" src="{{ waypoint.photo_webtrip }}"></image>
+      </view>
+      <view wx:if="{{ point.text }}" class="text">{{ point.text }}</view>
+      <view class="wp-stats">
+        <view class="wp-time"><image class="icon-time" src="../../images/time.png"></image>{{ point.local_time }}</view>
+      </view>
+    </block>
+    <view class="recommender">
+      <view class="title">{{ replies.recommender_count }} 人喜欢</view>
+      <view class="recommender_list">
+        <image wx:for="{{ replies.recommenders }}" wx:for-item="user" wx:key="user.id" src="{{ user.avatar_m }}" data-id="{{ user.id }}" class="avatar" bindtap="gotoUser"></image>
+      </view>
+    </view>
+    <view class="comment">
+      <view class="title">{{ replies.comment_count }} 人评价</view>
+      <view class="comment_list">
+        <view wx:for="{{ replies.comments }}" wx:for-item="comment" wx:key="comment.id" class="item">
+          <image src="{{ comment.user.avatar_m }}" class="avatar"></image>
+          <view class="info">
+            <view><text class="username">{{ comment.user.name }}: </text><text class="comment_text">{{ comment.comment }}</text></view>
+            <view class="time">{{ comment.date_added }}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
 </template>
 
 <script>
@@ -11,10 +41,21 @@
 
   export default class Index extends wepy.page {
     data = {
+      point: {}
     }
     methods = {
     }
-    onLoad() {
+    onLoad(option) {
+      console.log(option);
+      const self = this
+      wepy.request({
+        url: `http://api.breadtrip.com/trips/${option.tripId}/waypoints/${option.waypointId}/`,
+        success: function (res) {
+          self.point = res.data
+          wx.hideToast()
+          self.$apply()
+        }
+      })
     }
   }
 </script>
