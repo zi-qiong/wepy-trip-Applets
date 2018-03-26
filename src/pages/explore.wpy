@@ -49,7 +49,6 @@
 
 <script>
   import wepy from 'wepy'
-  import { connect } from 'wepy-redux'
 
   export default class Index extends wepy.page {
     config = {
@@ -63,7 +62,7 @@
     methods = {
      toPlaceDetail(e){
        wx.navigateTo({
-         url: '/pages/destination?id='+ e.id +'&type=' + e.type + '&Poitype=all'
+         url:`/pages/destination?id=${e.id}&type=${e.type}&Poitype=all`
        })
      }
     }
