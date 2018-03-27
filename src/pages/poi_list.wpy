@@ -1,0 +1,82 @@
+<style lang="less">
+  .poi_list {
+    .poi_tab {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 50rpx;
+      white-space: nowrap;
+      display: flex;
+      width: 100%;
+      margin:10rpx 0rpx;
+      .tab_item {
+        padding: 0 30rpx;
+        display: inline-block;
+        height: 100%;
+        color: #999;
+      }
+      .active {
+        background-image: linear-gradient(to top, #4abdcc, #51d7df);
+        color: #fff;
+        border-radius: 50rpx;
+      }
+    }
+  }
+</style>
+<template>
+  <view class="poi_list">
+    <scroll-view scroll-x="true" class="poi_tab">
+      <!--  display: inline-block-->
+      <view style="display: inline-block" wx:for="{{nav}}" wx:key="{{index}}" class="tab_item {{ active == index ? 'active':''}}" @tap="tapHandle({{ index }})">{{ item.title }}</view>
+    </scroll-view>
+    <list :params.sync='params'></list>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import List from '../components/poilist';
+  export default class Index extends wepy.page {
+    config = {
+      enablePullDownRefresh: true
+    }
+    components = {
+      list: List
+    }
+    data = {
+      params:'all',
+      nav: [{
+        title: '全部',
+        type: 'all'
+      }, {
+        title: '景点',
+        type: 'sights'
+      }, {
+        title: '住宿',
+        type: 'hotel'
+      }, {
+        title: '餐厅',
+        type: 'restaurant'
+      }, {
+        title: '休闲娱乐',
+        type: 'entertainment'
+      }, {
+        title: '购物',
+        type: 'mall'
+      }],
+      active: 0
+    }
+    methods = {
+      tapHandle(index){
+        this.active = index
+        this.params = this.nav[this.active].type
+      }
+    }
+    onLoad(option) {
+      let self = this
+      console.log(option)
+      self.params = 'all'
+    }
+    
+  }
+</script>
