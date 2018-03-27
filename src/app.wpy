@@ -26,6 +26,8 @@ export default class extends wepy.app {
       'pages/waypoint',
       'pages/explore',
       'pages/destination',
+      'pages/poi_list',
+      
     ],
     window: {
       backgroundTextStyle: 'dark',

@@ -1,0 +1,113 @@
+<style lang="less">
+  .list{padding-top:70rpx;}
+  .item{
+    display:flex;
+    align-content:;
+    align-items:center;
+    padding:20rpx 15rpx;
+    .cover{
+      width:190rpx;
+      height:190rpx;
+      flex:0 0 190rpx;
+      margin-right:20rpx;
+      border-radius:10rpx;
+    }
+    .leftwrapper{
+      height:190rpx;
+      position:relative;
+      font-size:25rpx;
+      .people{
+        position:absolute;
+        bottom:0;
+        left:0;
+      }
+      .name{
+        font-size:35rpx;
+        font-weight:bold;
+      }
+      .rating_desc{
+        display:flex
+      }
+    }
+  }
+</style>
+<template>
+  <view class="list">
+    <repeat for="{{list}}" key="index" index="index" item="item" >
+      <view class="item">
+        <image src="{{item.cover}}" class="cover"></image>
+        <view class="leftwrapper">
+          <view class="name"><text>{{item.name}}</text></view>
+          <view class="rating_desc">
+              <rating :count.sync='item'></rating>
+              <text>{{item.rating_users}}人评价</text>
+          </view>
+          <view><text>{{item.recommended_reason}}</text></view>
+          <view class="people"><text>{{item.visited_count}} 人去过</text></view>
+        </view>
+      </view>
+    </repeat>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy'
+  import Rating from '../components/rating';
+  export default class List extends wepy.component {
+    props = {
+      params: {
+        type: String,
+        default: 'all'
+      }
+    }
+    components = {
+      rating:Rating
+    }
+    data = {
+      loading: true,
+      list:null
+    }
+    methods = {
+    }
+    onLoad(option) {
+      let self = this
+      console.log(self)
+      wx.showToast({
+        title: '正在加载',
+        icon: 'loading',
+        duration: 10000,
+      });
+      self.getPoiById({
+        type: self.$wxpage.options.type,
+        id: self.$wxpage.options.id,
+        Poitype: self.params
+      })
+    }
+    watch = {
+      params(newValue, oldValue) {
+        let self = this
+        wx.showToast({
+          title: '正在加载',
+          icon: 'loading',
+          duration: 10000,
+        });
+        self.getPoiById({
+          type: self.$wxpage.options.type,
+          id: self.$wxpage.options.id,
+          Poitype: self.params
+        })
+      }
+    }
+    getPoiById(option) {
+      let self = this
+      wepy.request({
+        url: `http://api.breadtrip.com/destination/place/${option.type}/${option.id}/pois/${option.Poitype}/`,
+        success: function(d) {
+          wx.hideToast()
+          console.log(d)
+          self.list = d.data.items
+          self.$apply()
+        }
+      })
+    }
+  }
+</script>
