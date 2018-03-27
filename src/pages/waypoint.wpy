@@ -70,7 +70,7 @@ page {
   <view class="waypoint" wx:if="{{ point }}">
     <block wx:if="{{ point.photo }}">
       <view class="photo-ctn">
-        <image style="width: 100%; height: {{ point.photo_info.h * (windowWidth - 30) / point.photo_info.w }}px; background-color: #eeeeee;" src="{{ point.photo_webtrip }}"></image>
+        <image @tap="previewImage({{point}})" style="width: 100%; height: {{ point.photo_info.h * (windowWidth - 30) / point.photo_info.w }}px; background-color: #eeeeee;" src="{{ point.photo_webtrip }}"></image>
       </view>
       <view wx:if="{{ point.text }}" class="text">{{ point.text }}</view>
       <view class="wp-stats">
@@ -109,9 +109,19 @@ page {
       point: {}
     }
     methods = {
+      previewImage(e) {
+        const url = e.photo_webtrip;
+        wx.previewImage({
+          current: url,
+          urls: [url],
+        });
+      }
     }
     onLoad(option) {
       const self = this
+      wx.setNavigationBarTitle({
+        title: ' '
+      })
       wepy.request({
         url: `http://api.breadtrip.com/trips/${option.tripId}/waypoints/${option.waypointId}/`,
         success: function (res) {
