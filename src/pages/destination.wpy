@@ -111,7 +111,7 @@
     </view>
     <view class="nav">
       <image src="../../images/destination/pois.png" @tap='toPoiList'></image>
-      <image src="../../images/destination/trips.png"></image>
+      <image src="../../images/destination/trips.png" @tap='toTripList'></image>
     </view>
     <view class="place" wx:if="{{hotlist}}" >
       <view class="place_title">
@@ -160,7 +160,12 @@
         wx.navigateTo({
          url:`/pages/poi_list?id=${e.source.options.id}&type=${e.source.options.type}&Poitype=all`
        })
-      }
+     },
+     toTripList(e) {
+       wx.navigateTo({
+        url:`/pages/trip_list?id=${e.source.options.id}&type=${e.source.options.type}`
+      })
+     }
     }
 
     onLoad(option) {
