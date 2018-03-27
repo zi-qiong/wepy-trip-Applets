@@ -14,7 +14,7 @@
 .content {
   position: absolute;
   height:352rpx;
-  width:100%;
+  width:86%;
   margin: 0 40rpx;
   z-index: 1;
 }

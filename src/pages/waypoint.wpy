@@ -2,12 +2,75 @@
 page {
   background-color: #fbf7ed;
 }
+.waypoint {
+  padding: 15px;
+}
+.text {
+  background-color:#fff;
+  padding:5px 10px 0;
+  font-size: 30rpx;
+  line-height:1.5;
+  color:#5c5c5c;
+  word-break:break-word;
+}
+.wp-stats {
+  padding:5px 9px 11px;
+  background-color:#fff;
+  overflow:hidden;
+  border-bottom:3px solid #e7e7e7;
+  .wp-time {
+    font-size:12px;
+    float:left;
+    color:#999;
+    height:22px;
+    line-height:22px;
+  }
+  .icon-time {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 10rpx;
+    position: relative;
+    top: -2rpx;
+    width: 24rpx;
+    height: 24rpx;
+  }
+}
+.avatar {
+  width:40px;
+  height:40px;
+  border-radius:40px;
+  display: inline-block;
+  margin:0 10px 10px 0;
+}
+.recommender .title, .comment .title {
+  margin-top:10px;
+  margin-bottom:10px;
+  font-size:16px;
+  color:#a8915e;
+  font-weight:bold;
+}
+.comment .username {
+  color:#4abdcc;
+}
+.info {
+  font-size: 14px;
+  line-height: 1.5;
+}
+.item {
+  display: flex;
+}
+.comment .time {
+  color:#999;
+}
+
+
+
 </style>
 <template>
   <view class="waypoint" wx:if="{{ point }}">
     <block wx:if="{{ point.photo }}">
       <view class="photo-ctn">
-        <image bindtap="previewImage" data-src="{{ point.photo }}" style="width: 100%; height: {{ point.photo_info.h * (windowWidth - 30) / point.photo_info.w }}px; background-color: #eeeeee;" class="cover" src="{{ waypoint.photo_webtrip }}"></image>
+        <image style="width: 100%; height: {{ point.photo_info.h * (windowWidth - 30) / point.photo_info.w }}px; background-color: #eeeeee;" src="{{ point.photo_webtrip }}"></image>
       </view>
       <view wx:if="{{ point.text }}" class="text">{{ point.text }}</view>
       <view class="wp-stats">
@@ -15,15 +78,15 @@ page {
       </view>
     </block>
     <view class="recommender">
-      <view class="title">{{ replies.recommender_count }} 人喜欢</view>
+      <view class="title">{{ point.recommender_count || 0 }} 人喜欢</view>
       <view class="recommender_list">
-        <image wx:for="{{ replies.recommenders }}" wx:for-item="user" wx:key="user.id" src="{{ user.avatar_m }}" data-id="{{ user.id }}" class="avatar" bindtap="gotoUser"></image>
+        <image wx:for="{{ point.recommenders }}" wx:for-item="user" wx:key="user.id" src="{{ user.avatar_m }}" data-id="{{ user.id }}" class="avatar" bindtap="gotoUser"></image>
       </view>
     </view>
     <view class="comment">
-      <view class="title">{{ replies.comment_count }} 人评价</view>
+      <view class="title">{{ point.comment_count || 0 }} 人评价</view>
       <view class="comment_list">
-        <view wx:for="{{ replies.comments }}" wx:for-item="comment" wx:key="comment.id" class="item">
+        <view wx:for="{{ point.comments }}" wx:for-item="comment" wx:key="comment.id" class="item">
           <image src="{{ comment.user.avatar_m }}" class="avatar"></image>
           <view class="info">
             <view><text class="username">{{ comment.user.name }}: </text><text class="comment_text">{{ comment.comment }}</text></view>
@@ -38,6 +101,8 @@ page {
 <script>
   import wepy from 'wepy'
   import { connect } from 'wepy-redux'
+  const util = require('../utils/index.js');
+  const formatTime = util.formatTime;
 
   export default class Index extends wepy.page {
     data = {
@@ -46,7 +111,6 @@ page {
     methods = {
     }
     onLoad(option) {
-      console.log(option);
       const self = this
       wepy.request({
         url: `http://api.breadtrip.com/trips/${option.tripId}/waypoints/${option.waypointId}/`,
@@ -54,6 +118,19 @@ page {
           self.point = res.data
           wx.hideToast()
           self.$apply()
+          if (res.data.comments > 0) {
+            wepy.request({
+              url: `http://api.breadtrip.com/trips/${option.tripId}/waypoints/${option.waypointId}/replies/`,
+              success: function (res) {
+                res.data.comments.map((item)=> {
+                  item.date_added = formatTime(new Date(item.date_added * 1000), 2);
+                  return item;
+                })
+                self.point = {...self.point, ...res.data }
+                self.$apply()
+              }
+            })
+          }
         }
       })
     }
