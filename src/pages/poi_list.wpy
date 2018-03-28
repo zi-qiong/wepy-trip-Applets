@@ -1,4 +1,5 @@
 <style lang="less">
+  page{background: #fbf7ed}
   .poi_list {
     .poi_tab {
       position: fixed;
@@ -8,11 +9,12 @@
       white-space: nowrap;
       display: flex;
       width: 100%;
-      margin:10rpx 0rpx;
+      padding:10rpx 0rpx;
+      background:#fff;
+      z-index:3;
       .tab_item {
         padding: 0 30rpx;
         display: inline-block;
-        height: 100%;
         color: #999;
       }
       .active {
@@ -26,10 +28,9 @@
 <template>
   <view class="poi_list">
     <scroll-view scroll-x="true" class="poi_tab">
-      <!--  display: inline-block-->
       <view style="display: inline-block" wx:for="{{nav}}" wx:key="{{index}}" class="tab_item {{ active == index ? 'active':''}}" @tap="tapHandle({{ index }})">{{ item.title }}</view>
     </scroll-view>
-    <list :params.sync='params'></list>
+    <list :params.sync='params' :start.sync="start"></list>
   </view>
 </template>
 
@@ -64,18 +65,23 @@
         title: '购物',
         type: 'mall'
       }],
-      active: 0
+      active: 0,
+      start:0
     }
     methods = {
       tapHandle(index){
         this.active = index
         this.params = this.nav[this.active].type
+        this.start = 0
       }
     }
     onLoad(option) {
       let self = this
-      console.log(option)
       self.params = 'all'
+      self.start = 0
+    }
+     onReachBottom() {
+      this.start += 20
     }
     
   }
