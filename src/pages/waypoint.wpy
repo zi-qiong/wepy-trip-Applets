@@ -35,10 +35,18 @@ page {
     height: 24rpx;
   }
 }
-.avatar {
+.avatar-like {
   width:40px;
   height:40px;
   border-radius:40px;
+  display: inline-block;
+  margin:0 10px 10px 0;
+}
+.avatar {
+  width:30px;
+  height:30px;
+  float: left;
+  border-radius:30px;
   display: inline-block;
   margin:0 10px 10px 0;
 }
@@ -57,7 +65,7 @@ page {
   line-height: 1.5;
 }
 .item {
-  display: flex;
+  margin-bottom: 3px;
 }
 .comment .time {
   color:#999;
@@ -80,7 +88,7 @@ page {
     <view class="recommender">
       <view class="title">{{ point.recommender_count || 0 }} 人喜欢</view>
       <view class="recommender_list">
-        <image wx:for="{{ point.recommenders }}" wx:for-item="user" wx:key="user.id" src="{{ user.avatar_m }}" data-id="{{ user.id }}" class="avatar" bindtap="gotoUser"></image>
+        <image wx:for="{{ point.recommenders }}" wx:for-item="user" wx:key="user.id" src="{{ user.avatar_m }}" data-id="{{ user.id }}" class="avatar-like" bindtap="gotoUser"></image>
       </view>
     </view>
     <view class="comment">

@@ -2,18 +2,18 @@
 .container {
   margin: 20rpx;
   overflow: hidden;
-  height:352rpx;
+  height:240rpx;
   border-radius: 8rpx;
   color: #fff;
 }
 .cover {
   width:100%;
-  height:352rpx;
+  height:240rpx;
   vertical-align:bottom;
 }
 .content {
   position: absolute;
-  height:352rpx;
+  height:240rpx;
   width:86%;
   margin: 0 40rpx;
   z-index: 1;
@@ -29,21 +29,14 @@
   font-size: 18rpx;
   margin-right: 20rpx;
 }
-.userlog {
-  width: 50rpx;
-  height: 50rpx;
-  border-radius: 50%;
-}
 .user {
   position: absolute;
-  bottom: 10rpx;
+  bottom: 16rpx;
+  display: flex;
 }
 .userText {
   font-size: 18rpx;
-  position: absolute;
-  width:500rpx;
-  top: 15rpx;
-  left: 60rpx;
+  width: 100rpx;
 }
 .loading{
   color: #b0b0b0;
@@ -55,20 +48,18 @@
   <scroll-view bindscrolltolower="loadMore" style="height: {{ windowHeight }}px; width: {{ windowWidth }}px;" scroll-y="true" lower-threshold="800">
     <repeat for="{{listData}}" key="index" index="index" item="item">
       <view class="container" @tap="viewTrip({{item}})">
-        <image class="cover" src="{{ item.data[0].cover_image }}"></image>
+        <image class="cover" src="{{ item.cover_image_w640 }}"></image>
         <view class="content">
-          <text class="h2">{{ item.data[0].name }}</text>
+          <text class="h2">{{ item.name }}</text>
           <view class="detail">
             <view>
-              <text class="text">{{ item.data[0].first_day }}</text>
-              <text class="text">{{ item.data[0].day_count }}</text>
-              <text class="text">{{ item.data[0].view_count }}</text>
+              <text class="text">{{ item.date_added }}</text>
+              <text class="text">{{ item.day_count }}天</text>
             </view>
-            <text class="text">{{ item.data[0].popular_place_str }}</text>
           </view>
           <view class="user">
-            <image class="userlog" src="{{ item.data[0].user.avatar_l}}"></image>
-            <text class="userText">by {{item.data[0].user.name}}</text>
+            <text class="userText">{{item.waypoints}}足迹</text>
+            <text class="userText">{{item.recommendations}}收藏</text>
           </view>
         </view>
       </view>
@@ -94,34 +85,36 @@
       listData: [],
       loading: false,
       windowWidth: 0,
-      windowHeight: 0
+      windowHeight: 0,
+      params: {}
     }
     methods = {
       viewTrip(e) {
         wx.navigateTo({
-          url: `/pages/trip?id=${e.data[0].id}&name=${e.data[0].name}`
+          url: `/pages/trip?id=${e.id}&name=${e.name}`
         })
       }
     }
-    loadMore(params) {
+    loadMore() {
       const self = this
       if (self.loading) {
         return
       }
       self.loading = true
       wepy.request({
-        url: `http://api.breadtrip.com/destination/place/${params.type}/${params.id}/trips/?start=${this.start}`,
+        url: `http://api.breadtrip.com/destination/place/${this.params.type}/${this.params.id}/trips/?start=${this.start}`,
         success: function (res) {
-          self.listData = self.listData.concat(res.data.data.elements)
+          self.listData = self.listData.concat(res.data.items)
           self.$apply()
-          self.start = res.data.data.next_start
+          self.start = res.data.next_start
           self.loading = false
         }
       })
     }
     onLoad(options) {
       const self = this
-      this.loadMore(options)
+      self.params = options
+      this.loadMore()
       wx.getSystemInfo({
       success: function (res) {
         self.windowWidth = res.windowWidth;
