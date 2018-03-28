@@ -28,7 +28,7 @@
 <template>
   <view class="poi_list">
     <scroll-view scroll-x="true" class="poi_tab">
-      <view style="display: inline-block" wx:for="{{nav}}" wx:key="{{index}}" class="tab_item {{ active == index ? 'active':''}}" @tap="tapHandle({{ index }})">{{ item.title }}</view>
+      <view style="display: inline-block" wx:for="{{ nav }}" wx:key="{{ index }}" class="tab_item {{ active == index ? 'active':''}}" @tap="tapHandle({{ index }})">{{ item.title }}</view>
     </scroll-view>
     <list :params.sync='params' :start.sync="start"></list>
   </view>
@@ -76,9 +76,7 @@
       }
     }
     onLoad(option) {
-      let self = this
-      self.params = 'all'
-      self.start = 0
+
     }
      onReachBottom() {
       this.start += 20

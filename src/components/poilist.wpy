@@ -1,50 +1,55 @@
 <style lang="less">
-  .list{padding-top:70rpx;}
-  .item{
-    display:flex;
-    align-content:;
-    align-items:center;
-    padding:20rpx 15rpx;
-    .cover{
-      width:190rpx;
-      height:190rpx;
-      flex:0 0 190rpx;
-      margin-right:20rpx;
-      border-radius:10rpx;
+  .list {
+    padding-top: 70rpx;
+  }
+  .item {
+    display: flex;
+    align-content: ;
+    align-items: center;
+    padding: 20rpx 15rpx;
+    .cover {
+      width: 190rpx;
+      height: 190rpx;
+      flex: 0 0 190rpx;
+      margin-right: 20rpx;
+      border-radius: 10rpx;
     }
-    .leftwrapper{
-      height:190rpx;
-      position:relative;
-      font-size:25rpx;
-      .people{
-        position:absolute;
-        bottom:0;
-        left:0;
+    .leftwrapper {
+      height: 190rpx;
+      position: relative;
+      font-size: 25rpx;
+      .people {
+        position: absolute;
+        bottom: 0;
+        left: 0;
       }
-      .name{
-        font-size:35rpx;
-        font-weight:bold;
+      .name {
+        font-size: 35rpx;
+        font-weight: bold;
       }
-      .rating_desc{
-        display:flex
+      .rating_desc {
+        display: flex
       }
     }
   }
-  .load{text-align:center;color:#999;}
+  .load {
+    text-align: center;
+    color: #999;
+  }
 </style>
 <template>
-  <scroll-view class="list" scroll-y = "true" >
-    <repeat for="{{list}}" key="index" index="index" item="item" >
+  <scroll-view class="list" scroll-y="true">
+    <repeat for="{{ list }}" key="index" index="index" item="item">
       <view class="item">
-        <image src="{{item.cover}}" class="cover"></image>
+        <image src="{{ item.cover }}" class="cover"></image>
         <view class="leftwrapper">
-          <view class="name"><text>{{item.name}}</text></view>
+          <view class="name"><text>{{ item.name }}</text></view>
           <view class="rating_desc">
-              <rating :count.sync='item'></rating>
-              <text>{{item.rating_users}}人评价</text>
+            <rating :count.sync='item'></rating>
+            <text>{{ item.rating_users }}人评价</text>
           </view>
-          <view><text>{{item.recommended_reason}}</text></view>
-          <view class="people"><text>{{item.visited_count}} 人去过</text></view>
+          <view><text>{{ item.recommended_reason }}</text></view>
+          <view class="people"><text>{{ item.visited_count }} 人去过</text></view>
         </view>
       </view>
     </repeat>
@@ -60,16 +65,16 @@
         type: String,
         default: 'all'
       },
-      start:{
+      start: {
         type: Number,
       }
     }
     components = {
-      rating:Rating
+      rating: Rating
     }
     data = {
       loading: true,
-      list:[]
+      list: []
     }
     onLoad(option) {
       let self = this
@@ -82,7 +87,7 @@
         type: self.$wxpage.options.type,
         id: self.$wxpage.options.id,
         Poitype: self.params,
-        start:self.start
+        start: self.start
       })
     }
     watch = {
@@ -97,16 +102,16 @@
           type: self.$wxpage.options.type,
           id: self.$wxpage.options.id,
           Poitype: self.params,
-          start:self.start
+          start: self.start
         })
       },
-      start(newValue, oldValue){
+      start(newValue, oldValue) {
         let self = this
         self.getPoiById({
           type: self.$wxpage.options.type,
           id: self.$wxpage.options.id,
           Poitype: self.params,
-          start:self.start
+          start: self.start
         })
       }
     }
@@ -117,7 +122,7 @@
         success: function(d) {
           wx.hideToast()
           self.loading = false
-          if(self.start == 0) self.list = d.data.items
+          if (self.start == 0) self.list = d.data.items
           self.list = self.list.concat(d.data.items)
           self.$apply()
         }
